@@ -1,14 +1,23 @@
-import { View, Text, TextInput, TouchableOpacity, Image } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  NativeSyntheticEvent,
+  TextInputChangeEventData,
+  KeyboardTypeOptions,
+} from "react-native";
 import React, { useState } from "react";
 import { icons } from "../constants";
 
 interface IFormField {
   title: string;
   value: string;
-  handleChangeText: () => void;
+  handleChangeText: (e: string) => void;
   otherStyles: string;
-  keyboardType?: string;
-  placeholder: string;
+  keyboardType?: KeyboardTypeOptions;
+  placeholder?: string;
 }
 
 const FormField = ({
@@ -28,8 +37,9 @@ const FormField = ({
           className="flex-1 text-white font-psemibold text-base"
           value={value}
           placeholder={props.placeholder}
-          onChangeText={handleChangeText}
+          onChangeText={(e) => handleChangeText(e)}
           secureTextEntry={title === "Password" && !showPassword}
+          keyboardType={props.keyboardType}
         />
         {title === "Password" && (
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
