@@ -7,9 +7,10 @@ import CustomButton from "@/components/CustomButton";
 import { useGlobalContext } from "@/context/GlobalProvider";
 
 export default function App() {
-  const { isLoading, isLoggedIn } = useGlobalContext();
+  const { isLoading, isLoggedIn, user } = useGlobalContext();
 
   if (!isLoading && isLoggedIn) return <Redirect href="/home" />;
+
   return (
     <SafeAreaView className="bg-primary h-full ">
       <ScrollView contentContainerStyle={{ height: "100%" }}>
