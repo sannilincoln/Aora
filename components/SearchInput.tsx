@@ -26,6 +26,7 @@ const SearchInput = ({ value, handleChangeText, ...props }: ISearchInput) => {
         className="flex-1 text-white font-pregular  text-base mt-0.5 "
         value={value}
         placeholder={props.placeholder}
+        placeholderTextColor="#7b7b8b"
         // onChangeText={(e) => handleChangeText(e)}
       />
       <TouchableOpacity>
