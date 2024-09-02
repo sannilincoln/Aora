@@ -12,7 +12,7 @@ import { images } from "@/constants";
 import SearchInput from "@/components/SearchInput";
 import Trending from "@/components/Trending";
 import EmptyState from "@/components/EmptyState";
-import { getAllPosts } from "@/lib/appwrite";
+import { getAllPosts, getLatestPosts } from "@/lib/appwrite";
 import useAppWrite from "@/lib/useAppwrite";
 import { IPost } from "@/Interface/Ipost";
 import VideoCard from "@/components/VideoCard";
@@ -21,8 +21,9 @@ interface IVideos {}
 
 const Home = () => {
   const [refreshing, setRefreshing] = useState(false);
-  const { data: posts, isLoading, refetch } = useAppWrite({ fn: getAllPosts });
 
+  const { data: posts, isLoading, refetch } = useAppWrite({ fn: getAllPosts });
+  const { data: latestPosts } = useAppWrite({ fn: getLatestPosts });
   const onRefresh = async () => {
     setRefreshing(true);
     //re call vidoes if any new vidoes
@@ -66,9 +67,7 @@ const Home = () => {
                 {" "}
                 Latest Videos
               </Text>
-              <Trending
-                posts={[{ $id: 1 }, { $id: 2 }, { $id: 3 }, { $id: 4 }] ?? []}
-              />
+              <Trending posts={latestPosts ?? []} />
             </View>
           </View>
         )}
