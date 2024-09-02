@@ -114,6 +114,16 @@ export const getCurrentUser = async () => {
   }
 };
 
+export const getAllPosts = async () => {
+  try {
+    const posts = await databases.listDocuments(databaseId, videosCollectionId);
+
+    return posts.documents;
+  } catch (error) {
+    throw new Error(String(error));
+  }
+};
+
 export const getLatestPosts = async () => {
   try {
     const posts = await databases.listDocuments(
@@ -128,9 +138,13 @@ export const getLatestPosts = async () => {
   }
 };
 
-export const getAllPosts = async () => {
+export const searchPosts = async (query: string) => {
   try {
-    const posts = await databases.listDocuments(databaseId, videosCollectionId);
+    const posts = await databases.listDocuments(
+      databaseId,
+      videosCollectionId,
+      [Query.search("title", query)]
+    );
 
     return posts.documents;
   } catch (error) {
