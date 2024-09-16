@@ -118,7 +118,11 @@ export const getCurrentUser = async () => {
 
 export const getAllPosts = async () => {
   try {
-    const posts = await databases.listDocuments(databaseId, videosCollectionId);
+    const posts = await databases.listDocuments(
+      databaseId,
+      videosCollectionId,
+      [Query.orderDesc("$createdAt")]
+    );
 
     return posts.documents;
   } catch (error) {
@@ -131,7 +135,7 @@ export const getLatestPosts = async () => {
     const posts = await databases.listDocuments(
       databaseId,
       videosCollectionId,
-      [Query.orderDesc("$createdAt"), Query.limit(7)]
+      [Query.orderDesc("$createdAt")]
     );
 
     return posts.documents;
@@ -204,8 +208,12 @@ export const getFilePreview = async (fileId, type) => {
 
 export const UploadFile = async (file, type) => {
   if (!file) return;
-  const { mimeType, ...rest } = file;
-  const asset = { type: mimeType, ...rest };
+  const asset = {
+    name: file.fileName,
+    type: file.mimeType,
+    size: file.fileSize,
+    uri: file.uri,
+  };
 
   try {
     const UploadedFIle = await storage.createFile(
