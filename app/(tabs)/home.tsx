@@ -16,6 +16,7 @@ import { getAllPosts, getLatestPosts } from "@/lib/appwrite";
 import useAppWrite from "@/lib/useAppwrite";
 import { IPost } from "@/Interface/Ipost";
 import VideoCard from "@/components/VideoCard";
+import { useGlobalContext } from "@/context/GlobalProvider";
 
 interface IVideos {}
 
@@ -24,6 +25,8 @@ const Home = () => {
 
   const { data: posts, isLoading, refetch } = useAppWrite({ fn: getAllPosts });
   const { data: latestPosts } = useAppWrite({ fn: getLatestPosts });
+  const { user } = useGlobalContext();
+
   const onRefresh = async () => {
     setRefreshing(true);
     //re call vidoes if any new vidoes
@@ -48,7 +51,7 @@ const Home = () => {
                   Welcome Back
                 </Text>
                 <Text className="text-2xl font-psemibold text-white">
-                  Sanni
+                  {user?.username}
                 </Text>
               </View>
               <View className="mt-1.5">
