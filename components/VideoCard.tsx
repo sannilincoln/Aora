@@ -45,7 +45,7 @@ const VideoCard = ({
       {play ? (
         <Video
           source={{
-            uri: "https://www.w3schools.com/html/mov_bbb.mp4",
+            uri: video,
           }}
           className="h-60 w-full rounded-xl mt-3 "
           resizeMode={ResizeMode.CONTAIN}

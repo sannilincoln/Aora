@@ -13,9 +13,13 @@ import { ResizeMode, Video } from "expo-av";
 import { icons } from "@/constants";
 import CustomButton from "@/components/CustomButton";
 import * as DocumentPicker from "expo-document-picker";
+import { createVideo } from "@/lib/appwrite";
+import { useGlobalContext } from "@/context/GlobalProvider";
 
 const Create = () => {
   const [uploading, setUploading] = useState(false);
+  const { user } = useGlobalContext();
+
   const [form, setForm] = useState({
     title: "",
     video: null,
@@ -37,14 +41,33 @@ const Create = () => {
       if (selectType === "video") {
         setForm({ ...form, video: result.assets[0] });
       }
-    } else {
-      setTimeout(() => {
-        Alert.alert("Document Picked", JSON.stringify(result, null, 2));
-      }, 100);
     }
   };
 
-  const submit = () => {};
+  const submit = async () => {
+    if (!form.prompt || !form.thumbnail || !form.video || !form.title) {
+      return Alert.alert("please fill in all the fields");
+    }
+    setUploading(true);
+    try {
+      await createVideo({
+        ...form,
+        userId: user?.$id,
+      });
+      Alert.alert("Success", "Post uploaded successfully");
+      router.push("/home");
+    } catch (error) {
+      Alert.alert("Error", error.message);
+    } finally {
+      setForm({
+        title: "",
+        video: null,
+        thumbnail: null,
+        prompt: "",
+      });
+      setUploading(false);
+    }
+  };
   return (
     <SafeAreaView className=" bg-primary h-full">
       <ScrollView className="px-4 my-6">
@@ -65,9 +88,7 @@ const Create = () => {
               <Video
                 source={{ uri: form.video.uri }}
                 className="w-full h-64 rounded-2xl"
-                useNativeControls
                 resizeMode={ResizeMode.COVER}
-                isLooping
               />
             ) : (
               <View className="w-full h-40 px-4 bg-black-100 rounded-2xl justify-center items-center ">
@@ -109,7 +130,7 @@ const Create = () => {
         </View>
         <FormField
           title="AI Prompt"
-          value={form.title}
+          value={form.prompt}
           placeholder="The prompt you used to create this video..."
           handleChangeText={(e) => setForm({ ...form, prompt: e })}
           otherStyles="mt-7"

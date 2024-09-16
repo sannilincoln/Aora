@@ -6,6 +6,7 @@ import {
   Databases,
   ID,
   Query,
+  Storage,
 } from "react-native-appwrite";
 
 interface ICreateAccount {}
@@ -41,6 +42,7 @@ client
 const account = new Account(client);
 const avatars = new Avatars(client);
 const databases = new Databases(client);
+const storage = new Storage(client);
 
 export const createUser = async (
   email: string,
@@ -171,6 +173,74 @@ export const signOut = async () => {
     console.log("loggout");
 
     return session;
+  } catch (error) {
+    throw new Error(String(error));
+  }
+};
+export const getFilePreview = async (fileId, type) => {
+  let fileUrl;
+
+  try {
+    if (type === "video") {
+      fileUrl = storage.getFileView(storageId, fileId);
+    } else if (type === "image") {
+      fileUrl = storage.getFilePreview(
+        storageId,
+        fileId,
+        2000,
+        2000,
+        "top",
+        100
+      );
+    } else {
+      throw new Error("Invalid file type");
+    }
+    if (!fileUrl) throw Error;
+    return fileUrl;
+  } catch (error) {
+    throw new Error(String(error));
+  }
+};
+
+export const UploadFile = async (file, type) => {
+  if (!file) return;
+  const { mimeType, ...rest } = file;
+  const asset = { type: mimeType, ...rest };
+
+  try {
+    const UploadedFIle = await storage.createFile(
+      storageId,
+      ID.unique(),
+      asset
+    );
+    const fileurl = await getFilePreview(UploadedFIle.$id, type);
+
+    return fileurl;
+  } catch (error) {
+    throw new Error(String(error));
+  }
+};
+
+export const createVideo = async (formData) => {
+  try {
+    const [thumbnailUrl, videoUrl] = await Promise.all([
+      UploadFile(formData.thumbnail, "image"),
+      UploadFile(formData.video, "video"),
+    ]);
+
+    const newPost = await databases.createDocument(
+      databaseId,
+      videosCollectionId,
+      ID.unique(),
+      {
+        title: formData.title,
+        thumbnail: thumbnailUrl,
+        video: videoUrl,
+        prompt: formData.prompt,
+        creator: formData.userId,
+      }
+    );
+    return newPost;
   } catch (error) {
     throw new Error(String(error));
   }

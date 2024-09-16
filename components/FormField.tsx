@@ -40,7 +40,7 @@ const FormField = ({
           onChangeText={(e) => handleChangeText(e)}
           secureTextEntry={title === "Password" && !showPassword}
           keyboardType={props.keyboardType}
-          // placeholderTextColor="#eeeeee"
+          placeholderTextColor="#7B7B8B"
         />
         {title === "Password" && (
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
