@@ -5,12 +5,7 @@ import { icons } from "@/constants";
 import { ResizeMode, Video } from "expo-av";
 
 const VideoCard = ({
-  Video: {
-    title,
-    thumbnail,
-    video,
-    creator: { username, avatar },
-  },
+  Video: { title, thumbnail, video, creator },
 }: IVideoCard) => {
   const [play, setPlay] = useState(false);
 
@@ -20,7 +15,7 @@ const VideoCard = ({
         <View className="justify-center items-center flex-row flex-1">
           <View className="w-[46px] h-[46px] rounded-lg border border-secondary justify-center items-center p-0.5">
             <Image
-              source={{ uri: avatar }}
+              source={{ uri: creator?.avatar }}
               className="w-full h-full rounded-lg"
               resizeMode="cover"
             />
@@ -33,7 +28,7 @@ const VideoCard = ({
               {title}
             </Text>
             <Text className="text-xs font-pregular text-gray-100">
-              {username}
+              {creator?.username}
             </Text>
           </View>
         </View>
@@ -45,14 +40,14 @@ const VideoCard = ({
       {play ? (
         <Video
           source={{
-            uri: video,
+            uri: video || "",
           }}
           className="h-60 w-full rounded-xl mt-3 "
           resizeMode={ResizeMode.CONTAIN}
           useNativeControls
           shouldPlay
           onPlaybackStatusUpdate={(status) => {
-            if (status.didJustFinish) {
+            if (status.isLoaded && status.didJustFinish) {
               setPlay(false);
             }
           }}

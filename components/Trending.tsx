@@ -11,12 +11,11 @@ import React, { useRef, useState } from "react";
 import * as Animatable from "react-native-animatable";
 import { icons } from "@/constants";
 import { ResizeMode, Video, VideoProps } from "expo-av";
+import { IPost } from "@/Interface/Ipost";
+import { Animation } from "react-native-animatable";
 
 interface ITrending {
   posts: IPost[];
-}
-interface IPost {
-  $id: number;
 }
 
 const zoomIn = {
@@ -24,7 +23,7 @@ const zoomIn = {
     scale: 0.9,
   },
   1: { scale: 1 },
-};
+} as unknown as any;
 const zoomOut = {
   0: {
     scale: 1,
@@ -32,9 +31,15 @@ const zoomOut = {
   1: {
     scale: 0.9,
   },
-};
+} as unknown as any;
 
-const TrendingItem = ({ activeItem, item }) => {
+const TrendingItem = ({
+  activeItem,
+  item,
+}: {
+  activeItem: string;
+  item: IPost;
+}) => {
   const [play, setPlay] = useState(false);
   // console.log(item.video);
   const videoRef = useRef(null);
@@ -56,7 +61,7 @@ const TrendingItem = ({ activeItem, item }) => {
           shouldPlay
           // isMuted
           onPlaybackStatusUpdate={(status) => {
-            if (status.didJustFinish) {
+            if (status.isLoaded && status.didJustFinish) {
               setPlay(false);
             }
           }}
@@ -86,13 +91,18 @@ const TrendingItem = ({ activeItem, item }) => {
 };
 
 const Trending = ({ posts }: ITrending) => {
-  const [activeItem, setActiveItem] = useState(posts[0]);
+  const [activeItem, setActiveItem] = useState<string>(posts[0].$id);
 
-  const handleViewableItems = ({ viewableItems }) => {
+  const handleViewableItems = ({
+    viewableItems,
+  }: {
+    viewableItems: Array<{ item: { $id: string } }>;
+  }) => {
     if (viewableItems.length > 0) {
-      setActiveItem(viewableItems[0].key);
+      setActiveItem(viewableItems[0].item.$id);
     }
   };
+
   return (
     <FlatList
       data={posts}

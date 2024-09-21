@@ -10,12 +10,16 @@ import { useGlobalContext } from "@/context/GlobalProvider";
 import { icons } from "@/constants";
 import InfoBox from "@/components/InfoBox";
 import { router } from "expo-router";
+import { CustomUser } from "@/Interface/IUser";
 
 interface IVideos {}
 
 const Profile = () => {
   const [refreshing, setRefreshing] = useState(false);
-  const { user, setUser, setIsLoggedIn } = useGlobalContext();
+  const { setUser, setIsLoggedIn } = useGlobalContext();
+  const { user } = useGlobalContext() as {
+    user: CustomUser;
+  };
 
   const {
     data: posts,

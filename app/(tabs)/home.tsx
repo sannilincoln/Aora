@@ -17,6 +17,7 @@ import useAppWrite from "@/lib/useAppwrite";
 import { IPost } from "@/Interface/Ipost";
 import VideoCard from "@/components/VideoCard";
 import { useGlobalContext } from "@/context/GlobalProvider";
+import { CustomUser } from "@/Interface/IUser";
 
 interface IVideos {}
 
@@ -25,7 +26,7 @@ const Home = () => {
 
   const { data: posts, isLoading, refetch } = useAppWrite({ fn: getAllPosts });
   const { data: latestPosts } = useAppWrite({ fn: getLatestPosts });
-  const { user } = useGlobalContext();
+  const { user } = useGlobalContext() as { user: CustomUser };
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -70,6 +71,7 @@ const Home = () => {
                 {" "}
                 Latest Videos
               </Text>
+
               <Trending posts={latestPosts ?? []} />
             </View>
           </View>

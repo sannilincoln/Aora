@@ -34,8 +34,10 @@ const SignIn = () => {
       await signIn(form.email, form.password);
       const result = await getCurrentUser();
       // set it global state
-      setUser(result);
-      setIsLoggedIn(true);
+      if (result) {
+        setUser(result);
+        setIsLoggedIn(true);
+      }
 
       router.replace("/home");
     } catch (error) {

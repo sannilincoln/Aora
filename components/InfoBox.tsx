@@ -2,7 +2,7 @@ import { View, Text } from "react-native";
 import React from "react";
 
 interface IInfoBox {
-  title: string | number;
+  title: string | undefined | number;
   subtitle?: string;
   containerStyles?: string;
   titleStyles: string;

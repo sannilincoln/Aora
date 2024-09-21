@@ -1,10 +1,10 @@
-import { error } from "console";
 import {
   Account,
   Avatars,
   Client,
   Databases,
   ID,
+  ImageGravity,
   Query,
   Storage,
 } from "react-native-appwrite";
@@ -181,7 +181,7 @@ export const signOut = async () => {
     throw new Error(String(error));
   }
 };
-export const getFilePreview = async (fileId, type) => {
+export const getFilePreview = async (fileId: string, type: string) => {
   let fileUrl;
 
   try {
@@ -193,7 +193,7 @@ export const getFilePreview = async (fileId, type) => {
         fileId,
         2000,
         2000,
-        "top",
+        ImageGravity.Top,
         100
       );
     } else {
@@ -206,13 +206,14 @@ export const getFilePreview = async (fileId, type) => {
   }
 };
 
-export const UploadFile = async (file, type) => {
+export const UploadFile = async (file: File, type: string) => {
   if (!file) return;
   const asset = {
-    name: file.fileName,
-    type: file.mimeType,
-    size: file.fileSize,
-    uri: file.uri,
+    name: file.name,
+    type: file.type,
+    size: file.size,
+
+    uri: file.name,
   };
 
   try {
@@ -229,7 +230,13 @@ export const UploadFile = async (file, type) => {
   }
 };
 
-export const createVideo = async (formData) => {
+export const createVideo = async (formData: {
+  thumbnail: File;
+  video: File;
+  title: string;
+  prompt: string;
+  userId: string;
+}) => {
   try {
     const [thumbnailUrl, videoUrl] = await Promise.all([
       UploadFile(formData.thumbnail, "image"),

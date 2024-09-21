@@ -15,12 +15,30 @@ import CustomButton from "@/components/CustomButton";
 import * as ImagePicker from "expo-image-picker";
 import { createVideo } from "@/lib/appwrite";
 import { useGlobalContext } from "@/context/GlobalProvider";
+import { router } from "expo-router";
+import { Models } from "react-native-appwrite";
+
+interface FormState {
+  title: string;
+  video: ImagePicker.ImagePickerAsset | null;
+  thumbnail: ImagePicker.ImagePickerAsset | null;
+  prompt: string;
+}
+
+interface CreateVideoParams {
+  title: string;
+  video: ImagePicker.ImagePickerAsset;
+  thumbnail: ImagePicker.ImagePickerAsset;
+  prompt: string;
+  userId: string;
+}
 
 const Create = () => {
   const [uploading, setUploading] = useState(false);
-  const { user } = useGlobalContext();
+  const { user } = useGlobalContext() as { user: Models.User<object> };
+  // const typedUser = user as Models.User<object>;
 
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<FormState>({
     title: "",
     video: null,
     thumbnail: null,
@@ -48,20 +66,40 @@ const Create = () => {
     }
   };
 
+  const assetToFile = async (
+    asset: ImagePicker.ImagePickerAsset
+  ): Promise<File> => {
+    const response = await fetch(asset.uri);
+    const blob = await response.blob();
+    return new File([blob], asset.fileName || "file", { type: asset.mimeType });
+  };
+
   const submit = async () => {
     if (!form.prompt || !form.thumbnail || !form.video || !form.title) {
       return Alert.alert("please fill in all the fields");
     }
+    const videoFile = await assetToFile(form.video);
+    const thumbnailFile = await assetToFile(form.thumbnail);
+
     setUploading(true);
     try {
+      if (!user) {
+        return Alert.alert("Please login to continue");
+      }
       await createVideo({
         ...form,
-        userId: user?.$id,
+        userId: user.$id,
+        video: videoFile,
+        thumbnail: thumbnailFile,
       });
       Alert.alert("Success", "Post uploaded successfully");
       router.push("/home");
     } catch (error) {
-      Alert.alert("Error", error.message);
+      if (error instanceof Error) {
+        Alert.alert("Error", error.message);
+      } else {
+        Alert.alert("Error", String(error)); // Handle non-Error types
+      }
     } finally {
       setForm({
         title: "",
