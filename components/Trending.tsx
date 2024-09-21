@@ -91,22 +91,22 @@ const TrendingItem = ({
 };
 
 const Trending = ({ posts }: ITrending) => {
-  const [activeItem, setActiveItem] = useState<string>(posts[0].$id);
+  const [activeItem, setActiveItem] = useState<string>(posts[0]?.$id ?? "");
 
   const handleViewableItems = ({
     viewableItems,
   }: {
-    viewableItems: Array<{ item: { $id: string } }>;
+    viewableItems: Array<{ item: IPost }>;
   }) => {
     if (viewableItems.length > 0) {
-      setActiveItem(viewableItems[0].item.$id);
+      setActiveItem(viewableItems[0].item.$id ?? "");
     }
   };
 
   return (
     <FlatList
       data={posts}
-      keyExtractor={(item) => item.$id.toString()}
+      keyExtractor={(item) => item.$id?.toString() ?? Math.random().toString()}
       renderItem={({ item }) => (
         <TrendingItem activeItem={activeItem} item={item} />
       )}

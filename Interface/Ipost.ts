@@ -5,7 +5,7 @@ export interface IPost {
   $collectionId?: string;
   $createdAt?: string;
   $databaseId?: string;
-  $id: string;
+  $id?: string;
   $permissions?: any[];
   $tenant?: string;
   $updatedAt?: string;
