@@ -37,7 +37,7 @@ const TabButton = ({
         className="w-6 h-6 mb-1"
         tintColor={color}
       />
-      <Text style={{ color, fontSize: 12, fontFamily: "pregular" }}>
+      <Text style={{ color, fontSize: 12, fontFamily: "Poppins-Regular" }}>
         {label}
       </Text>
     </TouchableOpacity>
