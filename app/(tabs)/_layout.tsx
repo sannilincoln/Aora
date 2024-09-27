@@ -103,3 +103,28 @@ const TabsLayout = () => {
 };
 
 export default TabsLayout;
+
+// optin to makeit into components
+
+// import React from "react";
+// import { Tabs } from "expo-router";
+// import { icons } from "../../constants";
+// import CustomTabBar from "../../components/CustomTabBar";
+
+// const TabsLayout = () => {
+//   return (
+//     <Tabs
+//       tabBar={(props) => <CustomTabBar {...props} icons={icons} />}
+//       screenOptions={{
+//         headerShown: false,
+//       }}
+//     >
+//       <Tabs.Screen name="home" />
+//       <Tabs.Screen name="bookmark" />
+//       <Tabs.Screen name="create" />
+//       <Tabs.Screen name="profile" />
+//     </Tabs>
+//   );
+// };
+
+// export default TabsLayout;
