@@ -1,112 +1,104 @@
-import { View, Text, Image, ImageSourcePropType } from "react-native";
 import React from "react";
 import { Tabs } from "expo-router";
 import { icons } from "../../constants";
+import {
+  useWindowDimensions,
+  Image,
+  Text,
+  View,
+  TouchableOpacity,
+  GestureResponderEvent,
+} from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-interface ITabIcon {
-  icon: ImageSourcePropType;
-  color: string;
-  name: string;
-  focused: boolean;
+interface TabButtonProps {
+  icon: any;
+  label: string;
+  accessibilityState?: { selected?: boolean };
+  onPress?: (e: GestureResponderEvent) => void;
 }
 
-const TabIcon = ({ icon, color, name, focused }: ITabIcon) => {
+const TabButton = ({
+  icon,
+  label,
+  accessibilityState,
+  onPress,
+}: TabButtonProps) => {
+  const focused = accessibilityState?.selected;
+  const color = focused ? "#ffa001" : "#cdcde0";
+
   return (
-    <View className="items-center justify-center gap-2">
+    <TouchableOpacity
+      onPress={onPress}
+      className="flex-1 items-center justify-center"
+    >
       <Image
         source={icon}
         resizeMode="contain"
-        className="w-6 h-6"
+        className="w-6 h-6 mb-1"
         tintColor={color}
       />
-      <Text
-        className={`${focused ? "font-psemibold" : "font-pregular"} text-xs`}
-        style={{ color: color }}
-      >
-        {name}
+      <Text style={{ color, fontSize: 12, fontFamily: "pregular" }}>
+        {label}
       </Text>
-    </View>
+    </TouchableOpacity>
   );
 };
 
 const TabsLayout = () => {
+  const { height: windowHeight } = useWindowDimensions();
+  const { bottom: safeAreaBottom } = useSafeAreaInsets();
+
+  const tabBarHeight = Math.min(
+    Math.max(60, windowHeight * 0.04 + safeAreaBottom),
+    80
+  );
+
   return (
-    <>
-      <Tabs
-        screenOptions={{
-          tabBarShowLabel: false,
-          tabBarActiveTintColor: "#ffa001",
-          tabBarInactiveTintColor: "#cdcde0",
-          tabBarStyle: {
-            backgroundColor: "#161622",
-            borderTopWidth: 1,
-            borderTopColor: "#232533",
-            height: 65,
-          },
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+        tabBarStyle: {
+          backgroundColor: "#161622",
+          borderTopWidth: 1,
+          borderTopColor: "#232533",
+          height: tabBarHeight,
+        },
+      }}
+    >
+      <Tabs.Screen
+        name="home"
+        options={{
+          tabBarButton: (props) => (
+            <TabButton {...props} icon={icons.home} label="Home" />
+          ),
         }}
-      >
-        <Tabs.Screen
-          name="home"
-          options={{
-            title: "Home",
-            headerShown: false,
-            tabBarIcon: ({ color, focused }) => (
-              <TabIcon
-                icon={icons.home}
-                color={color}
-                name="Home"
-                focused={focused}
-              />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="bookmark"
-          options={{
-            title: "Bookmark",
-            headerShown: false,
-            tabBarIcon: ({ color, focused }) => (
-              <TabIcon
-                icon={icons.bookmark}
-                color={color}
-                name="Bookmark"
-                focused={focused}
-              />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="create"
-          options={{
-            title: "Create",
-            headerShown: false,
-            tabBarIcon: ({ color, focused }) => (
-              <TabIcon
-                icon={icons.plus}
-                color={color}
-                name="Create"
-                focused={focused}
-              />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="profile"
-          options={{
-            title: "Profile",
-            headerShown: false,
-            tabBarIcon: ({ color, focused }) => (
-              <TabIcon
-                icon={icons.profile}
-                color={color}
-                name="Profile"
-                focused={focused}
-              />
-            ),
-          }}
-        />
-      </Tabs>
-    </>
+      />
+      <Tabs.Screen
+        name="bookmark"
+        options={{
+          tabBarButton: (props) => (
+            <TabButton {...props} icon={icons.bookmark} label="Bookmark" />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="create"
+        options={{
+          tabBarButton: (props) => (
+            <TabButton {...props} icon={icons.plus} label="Create" />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          tabBarButton: (props) => (
+            <TabButton {...props} icon={icons.profile} label="Profile" />
+          ),
+        }}
+      />
+    </Tabs>
   );
 };
 
